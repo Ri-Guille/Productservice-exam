@@ -7,11 +7,25 @@ package com.guillermo.productservice.model;
  * @author G 29 oct 2025
  */
 public class Product {
-
     private int id;
     private String productCode;
     private int stock;
     private String warehouse;
+
+    // Constructor sin ID (para inserción)
+    public Product(String productCode, int stock, String warehouse) {
+        this.productCode = productCode;
+        this.stock = stock;
+        this.warehouse = warehouse;
+    }
+
+    // Constructor completo
+    public Product(int id, String productCode, int stock, String warehouse) {
+        this.id = id;
+        this.productCode = productCode;
+        this.stock = stock;
+        this.warehouse = warehouse;
+    }
 
     // Getters y Setters
     public int getId() {
@@ -26,10 +40,6 @@ public class Product {
         return productCode;
     }
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
     public int getStock() {
         return stock;
     }
@@ -42,15 +52,12 @@ public class Product {
         return warehouse;
     }
 
-    public void setWarehouse(String warehouse) {
-        this.warehouse = warehouse;
-    }
-
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", stock=" + stock +
-                '}';
+        return "Product{id=" + id + 
+               ", productCode='" + productCode + '\'' +
+               ", stock=" + stock +
+               ", warehouse='" + warehouse + '\'' +
+               '}';
     }
 }
