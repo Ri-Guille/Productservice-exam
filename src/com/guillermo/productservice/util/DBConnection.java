@@ -18,15 +18,21 @@ public class DBConnection {
     private static final String PASSWORD = "admin"; 
     
    
-    public static Connection getConnection() throws SQLException {
+    static {
         try {
-            // Cargar el driver JDBC (no es estrictamente necesario desde Java 8, pero es buena práctica)
+            // Cargar el driver de MySQL
+            // El nombre de la clase del driver es diferente
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
-            // Manejar la excepción si el driver no está disponible (e.g., falta el JAR en el classpath)
-            System.err.println("Error: Driver JDBC de MySQL no encontrado. Asegúrate de tener el JAR en el classpath.");
-            throw new SQLException("Driver JDBC de MySQL no encontrado.", e);
+            throw new RuntimeException("No se pudo encontrar el driver de MySQL", e);
         }
+    }
+
+    /**
+     * @return una conexión JDBC
+     * @throws SQLException si hay un error al conectar
+     */
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
     }
 }

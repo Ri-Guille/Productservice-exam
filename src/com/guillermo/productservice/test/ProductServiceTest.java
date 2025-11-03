@@ -31,11 +31,8 @@ public class ProductServiceTest {
         test.runSafeDeduction();
     }
 
-    private void runDeduction(Product p, Runnable task, String mode, boolean expectFail) throws InterruptedException, SQLException {
-        dao.dropTable();
-        dao.createTable();
-        dao.addProduct(p);
-        int id = p.getId();
+    private void runDeduction(Product p, Runnable task, String mode, boolean expectFail, int id) throws InterruptedException, SQLException {
+        
 
         System.out.println("\n--- SIMULACIÓN: " + mode + " ---");
         System.out.println("Inicio con ID " + id + ": " + p.getStock());
@@ -60,12 +57,20 @@ public class ProductServiceTest {
     
     private void runUnsafeDeduction() throws InterruptedException, SQLException {
         Product product = new Product(0, "P001", STOCK_INI, "Central");
-        runDeduction(product, new UnsafeStockDeductor(product.getId()), "INSEGURO", true);
+        dao.dropTable();
+        dao.createTable();
+        dao.addProduct(product);
+        int id = product.getId();
+        runDeduction(product, new UnsafeStockDeductor(product.getId()), "INSEGURO", true, id);
     }
     
     private void runSafeDeduction() throws InterruptedException, SQLException {
         Product product = new Product(0, "P002", STOCK_INI, "Oeste");
-        runDeduction(product, new SafeStockDeductor(product.getId()), "SEGURO (Atómico)", false);
+        dao.dropTable();
+        dao.createTable();
+        dao.addProduct(product);
+        int id = product.getId();
+        runDeduction(product, new SafeStockDeductor(product.getId()), "SEGURO (Atómico)", false, id);
     }
 
     // Hilo Inseguro: Read-Modify-Write (Vulnerable a Race Condition)
@@ -78,7 +83,7 @@ public class ProductServiceTest {
             ProductDAO dao = new ProductDAOImpl();
             Product p = dao.getProductById(id);
             if (p == null) return;
-            try { Thread.sleep(1); } catch (InterruptedException ignored) {} // Simula retardo
+            
             p.setStock(p.getStock() - DEDUCT_QTY);
             dao.updateProduct(p);
         }
